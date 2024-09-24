@@ -1,11 +1,16 @@
 #include <Windows.h>
-
+#include "WindowsMessageMap.h"
+#include <wchar.h>
 int messageHandler();
 
 
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	static WindowsMessageMap mm;
+	std::string res = mm(msg, lParam, wParam);
+	std::wstring temp = std::wstring(res.begin(), res.end());
+	OutputDebugString(temp.c_str());
 	switch (msg)
 	{
 	case WM_CLOSE:

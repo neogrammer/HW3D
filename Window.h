@@ -1,20 +1,26 @@
 #pragma once
-#include "CidWin.h"
-#include "FUCK.h"
+#include "ChiliWin.h"
+#include "ChiliException.h"
+#include "Keyboard.h"
+#include "Mouse.h"
+#include "Graphics.h"
 #include <optional>
+#include <memory>
+
+
 class Window
 {
 public:
-	class HolyFuck : public FUCK
+	class Exception : public ChiliException
 	{
-		using FUCK::FUCK;
+		using ChiliException::ChiliException;
 	public:
 		static std::string TranslateErrorCode(HRESULT hr) noexcept;
 	};
-	class HRSHITFUCK : public HolyFuck
+	class HrException : public Exception
 	{
 	public:
-		HRSHITFUCK(int line, const char* file, HRESULT hr) noexcept;
+		HrException(int line, const char* file, HRESULT hr) noexcept;
 		const char* what() const noexcept override;
 		const char* GetType() const noexcept override;
 		HRESULT GetErrorCode() const noexcept;
@@ -22,13 +28,12 @@ public:
 	private:
 		HRESULT hr;
 	};
-	class NoGfxFUCK : public HolyFuck
+	class NoGfxException : public Exception
 	{
 	public:
-		using HolyFuck::HolyFuck;
+		using Exception::Exception;
 		const char* GetType() const noexcept override;
 	};
-
 private:
 	// singleton manages registration/cleanup of window class
 	class WindowClass
@@ -41,7 +46,7 @@ private:
 		~WindowClass();
 		WindowClass(const WindowClass&) = delete;
 		WindowClass& operator=(const WindowClass&) = delete;
-		static constexpr const char* wndClassName = "CID Direct3D Engine Window";
+		static constexpr const char* wndClassName = "Chili Direct3D Engine Window";
 		static WindowClass wndClass;
 		HINSTANCE hInst;
 	};
@@ -50,17 +55,34 @@ public:
 	~Window();
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
-
+	void SetTitle(const std::string& title);
+	void EnableCursor() noexcept;
+	void DisableCursor() noexcept;
+	bool CursorEnabled() const noexcept;
+	static std::optional<int> ProcessMessages() noexcept;
+	Graphics& Gfx();
 private:
-
+	void ConfineCursor() noexcept;
+	void FreeCursor() noexcept;
+	void ShowCursor() noexcept;
+	void HideCursor() noexcept;
+	void EnableImGuiMouse() noexcept;
+	void DisableImGuiMouse() noexcept;
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
+public:
+	Keyboard kbd;
+	Mouse mouse;
 private:
-
+	bool cursorEnabled = true;
 	int width;
 	int height;
 	HWND hWnd;
+	std::unique_ptr<Graphics> pGfx;
+	std::vector<BYTE> rawBuffer;
+	std::string commandLine;
 };
 
-#define CIDWND_FUCK( hr ) Window::FUCK(__LINE__, __FILE__, hr)
+#define CHWND_EXCEPT( hr ) Window::HrException( __LINE__, __FILE__, hr )
+#define CHWND_LAST_EXCEPT( ) Window::HrException( __LINE__, __FILE__, GetLastError() )

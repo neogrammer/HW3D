@@ -1,9 +1,33 @@
 #pragma once
 #include "CidWin.h"
+#include "FUCK.h"
 #include <optional>
 class Window
 {
 public:
+	class HolyFuck : public FUCK
+	{
+		using FUCK::FUCK;
+	public:
+		static std::string TranslateErrorCode(HRESULT hr) noexcept;
+	};
+	class HRSHITFUCK : public HolyFuck
+	{
+	public:
+		HRSHITFUCK(int line, const char* file, HRESULT hr) noexcept;
+		const char* what() const noexcept override;
+		const char* GetType() const noexcept override;
+		HRESULT GetErrorCode() const noexcept;
+		std::string GetErrorDescription() const noexcept;
+	private:
+		HRESULT hr;
+	};
+	class NoGfxFUCK : public HolyFuck
+	{
+	public:
+		using HolyFuck::HolyFuck;
+		const char* GetType() const noexcept override;
+	};
 
 private:
 	// singleton manages registration/cleanup of window class
@@ -38,3 +62,5 @@ private:
 	int height;
 	HWND hWnd;
 };
+
+#define CIDWND_FUCK( hr ) Window::FUCK(__LINE__, __FILE__, hr)

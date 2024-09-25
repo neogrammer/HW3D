@@ -17,13 +17,16 @@
 *	You should have received a copy of the GNU General Public License					  *
 *	along with The Chili Direct3D Engine.  If not, see <http://www.gnu.org/licenses/>.    *
 ******************************************************************************************/
-#include "Windows.h"
+#include <Windows.h>
 #include "Window.h"
 #include <sstream>
 #include "resource.h"
 #include "Keyboard.h"
-/*
-#include "resource.h"
+#include <winnls.h>
+#include <stringapiset.h>
+#include <cstdlib>
+#include <wchar.h>
+/*#include "resource.h"
 #include "WindowsThrowMacros.h"
 #include "imgui/imgui_impl_win32.h"*/
 

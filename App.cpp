@@ -121,7 +121,12 @@ App::App(const std::string& commandLine)
 
 void App::DoFrame(float dt)
 {
+	const float c = sin(timer.Peek()) / 2.f + 0.5f;
+	wnd.Gfx().EndFrame();
 	float t = timer.Peek();
+
+	wnd.Gfx().ClearBuffer(c, c, 1.0f);
+	wnd.Gfx().EndFrame();
 	std::ostringstream oss;
 	oss << "Time elapsed: " << std::setprecision(1) << std::fixed << t << "s";
 	wnd.SetTitle(oss.str());
@@ -169,7 +174,7 @@ void App::DoFrame(float dt)
 	//rg.RenderWindows(wnd.Gfx());
 
 	//// present
-	//wnd.Gfx().EndFrame();
+	wnd.Gfx().EndFrame();
 	//rg.Reset();
 }
 //

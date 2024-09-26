@@ -143,15 +143,43 @@ HRESULT Graphics::HrException::GetErrorCode() const noexcept
 
 std::string Graphics::HrException::GetErrorString() const noexcept
 {
-	return "";//DXGetErrorString(hr);
+	const WCHAR* ws = DXGetErrorString(hr);
+
+	int len = WideCharToMultiByte(CP_UTF8, 0, ws, -1, nullptr, 0, nullptr, nullptr);
+	
+
+	// Allocate a buffer for the resulting string
+	std::string str(len, '\0');
+
+	// Perform the conversion
+	WideCharToMultiByte(CP_UTF8, 0, ws, -1, &str[0], len, nullptr, nullptr);
+
+	// Remove the null terminator added by WideCharToMultiByte
+	str.resize(len - 1);
+
+	return str;
 }
 
 std::string Graphics::HrException::GetErrorDescription() const noexcept
 {
-	return "";
-	/*char buf[512];
-	DXGetErrorDescription(hr, buf, sizeof(buf));
-	return buf;*/
+	
+	WCHAR buf[512];
+	
+	DXGetErrorDescription(hr, buf, ARRAYSIZE(buf));
+
+		int len = WideCharToMultiByte(CP_UTF8, 0, buf, -1, nullptr, 0, nullptr, nullptr);
+		
+
+		// Allocate a buffer for the resulting string
+		std::string str(len, '\0');
+
+		// Perform the conversion
+		WideCharToMultiByte(CP_UTF8, 0, buf, -1, &str[0], len, nullptr, nullptr);
+
+		// Remove the null terminator added by WideCharToMultiByte
+		str.resize(len - 1);
+	
+	return str;
 }
 
 std::string Graphics::HrException::GetErrorInfo() const noexcept

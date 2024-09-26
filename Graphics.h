@@ -8,6 +8,7 @@
 #include <DirectXMath.h>
 #include <memory>
 #include <random>
+#include <wrl.h>
 
 class Graphics
 {
@@ -15,6 +16,9 @@ public:
 	class Exception : public ChiliException
 	{
 		using ChiliException::ChiliException;
+	public:
+
+		virtual ~Exception() override = default;
 	};
 	class HrException : public Exception
 	{
@@ -30,6 +34,19 @@ public:
 		HRESULT hr;
 		std::string info;
 	};
+
+	class InfoException : public Exception
+	{
+	public:
+		InfoException(int line, const char* file, std::string message);
+		~InfoException() override = default;
+		const char* what() const noexcept override;
+		const char* GetType() const noexcept override;
+		std::string GetErrorInfo() const noexcept;
+	private:
+		std::string info;
+	};
+
 	class DeviceRemovedException : public HrException
 	{
 		using HrException::HrException;
@@ -40,16 +57,18 @@ public:
 	};
 public:
 	Graphics(HWND hWnd, int width_, int height_);
-	~Graphics();
+	~Graphics() = default;
 	Graphics(const Graphics&) = delete;
 	Graphics& operator=(const Graphics&) = delete;
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
+	void DrawTestTriangle();
 private:
-	ID3D11Device* pDevice = nullptr;
-	IDXGISwapChain* pSwap = nullptr;
-	ID3D11DeviceContext* pContext = nullptr;
-	ID3D11RenderTargetView* pTarget = nullptr;
+
+	Microsoft::WRL::ComPtr<ID3D11Device> pDevice;
+	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwap;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pTarget;
 
 	int width{};
 	int height{};

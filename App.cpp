@@ -20,7 +20,7 @@ namespace dx = DirectX;
 App::App(const std::string& commandLine)
 	:
 	//commandLine(commandLine),
-	wnd(1280, 720, "The Donkey Fart Box")
+	wnd(1366, 768, "The Donkey Fart Box")
 	//scriptCommander(TokenizeQuoted(commandLine)),
 	//light(wnd.Gfx(), { 10.0f,5.0f,0.0f })
 {
@@ -122,14 +122,17 @@ App::App(const std::string& commandLine)
 void App::DoFrame(float dt)
 {
 	const float c = sin(timer.Peek()) / 2.f + 0.5f;
-	wnd.Gfx().EndFrame();
-	float t = timer.Peek();
+	//wnd.Gfx().EndFrame();
+	//float t = timer.Peek();
 
 	wnd.Gfx().ClearBuffer(c, c, 1.0f);
+	
+	wnd.Gfx().DrawTestTriangle();
+	
 	wnd.Gfx().EndFrame();
-	std::ostringstream oss;
-	oss << "Time elapsed: " << std::setprecision(1) << std::fixed << t << "s";
-	wnd.SetTitle(oss.str());
+	//std::ostringstream oss;
+	//oss << "Time elapsed: " << std::setprecision(1) << std::fixed << t << "s";
+	//wnd.SetTitle(oss.str());
 	//oss << "Time elapsed: " << std::setprecision
 	//wnd.Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
 	//light.Bind(wnd.Gfx(), cameras->GetMatrix());
@@ -174,7 +177,7 @@ void App::DoFrame(float dt)
 	//rg.RenderWindows(wnd.Gfx());
 
 	//// present
-	wnd.Gfx().EndFrame();
+//	wnd.Gfx().EndFrame();
 	//rg.Reset();
 }
 //

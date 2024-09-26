@@ -38,7 +38,8 @@ const char* ChiliException::what() const noexcept
 
 const char* ChiliException::GetType() const noexcept
 {
-	return ((std::string)("Chili Exception")).c_str();
+	const char* c = ((std::string)("Chili Exception")).c_str();
+	return c;
 }
 
 int ChiliException::GetLine() const noexcept

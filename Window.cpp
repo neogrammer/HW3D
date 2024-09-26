@@ -121,7 +121,7 @@ Window::Window(int width, int height, const char* name)
 	{
 		throw CHWND_LAST_EXCEPT();
 	}
-	SetTitle("Whoooo");
+	SetTitle(name);
 }
 
 Window::~Window()

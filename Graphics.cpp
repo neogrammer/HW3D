@@ -53,7 +53,7 @@ Graphics::Graphics(HWND hWnd, int width_, int height_)
 	));
 	// gain access to texture subresource
 	ID3D11Resource* pBackBuffer = nullptr;
-	GFX_THROW_FAILED(pSwap->GetBuffer(0, _uuidof(ID3D11Resource), reinterpret_cast<void**>(&pBackBuffer)));
+	GFX_THROW_FAILED(pSwap->GetBuffer(0, _uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&pBackBuffer)));
 	GFX_THROW_FAILED(pDevice->CreateRenderTargetView(
 		pBackBuffer,
 		nullptr,
@@ -85,8 +85,18 @@ Graphics::~Graphics()
 
 void Graphics::EndFrame()
 {
-
-	pSwap->Present(1u, 0u);
+	HRESULT hr;
+	if (FAILED(hr = pSwap->Present(1u, 0u)))
+	{
+		if (hr == DXGI_ERROR_DEVICE_REMOVED)
+		{
+			throw GFX_DEVICE_REMOVED_EXCEPT(pDevice->GetDeviceRemovedReason());
+		}
+		else
+		{
+			GFX_THROW_FAILED(hr);
+		}
+	}
 }
 
 void Graphics::ClearBuffer(float red, float green, float blue) noexcept
@@ -95,6 +105,13 @@ void Graphics::ClearBuffer(float red, float green, float blue) noexcept
 	pContext->ClearRenderTargetView(pTarget, color);
 }
 
+
+//Graphics::HrException::HrException(int line, const char* file, HRESULT hr) noexcept
+//	:
+//	Exception(line, file),
+//	hr(hr)
+//{}
+//
 // Graphics exception stuff
 Graphics::HrException::HrException(int line, const char* file, HRESULT hr, std::vector<std::string> infoMsgs) noexcept
 	:

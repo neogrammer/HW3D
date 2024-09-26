@@ -186,7 +186,7 @@ Graphics& Window::Gfx()
 {
 	if (!pGfx)
 	{
-		throw std::runtime_error("Shit");// CHWND_NOGFX_EXCEPT();
+		throw CHWND_NOGFX_EXCEPT();
 	}
 	return *pGfx;
 }
